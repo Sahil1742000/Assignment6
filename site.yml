@@ -1,0 +1,49 @@
+---
+- name: Configure Web Server
+  hosts: webservers
+  become: yes  # Use sudo to execute tasks as root
+
+  vars:
+    httpd_package: httpd
+    httpd_service: httpd
+    web_root: /var/www/html
+
+  tasks:
+    - name: Ensure the package manager is up to date
+      yum:
+        name: '*'
+        state: latest
+
+    - name: Install HTTPD package
+      yum:
+        name: "{{ httpd_package }}"
+        state: present
+
+    - name: Start and enable HTTPD service
+      service:
+        name: "{{ httpd_service }}"
+        state: started
+        enabled: yes
+
+    - name: Create a custom index.html page
+      copy:
+        dest: "{{ web_root }}/index.html"
+        content: |
+          <!doctype html>
+          <html>
+          <head><title>Welcome</title></head>
+          <body><h1>Welcome to my web server!</h1></body>
+          </html>
+
+    - name: Ensure the firewall allows HTTP traffic
+      firewalld:
+        service: http
+        state: enabled
+        permanent: yes
+      notify: Reload firewall
+
+  handlers:
+    - name: Reload firewall
+      firewalld:
+        state: reloaded
+

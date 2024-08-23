@@ -1,0 +1,6 @@
+gitUrl: 'https://github.com/Sahil1742000/Assignment6.git'
+gitBranch: 'main'
+playbookPath: 'playbooks/site.yml'
+inventory: 'inventory/hosts'
+notificationEmail: 'sahilpathania682@gmail.com'
+
